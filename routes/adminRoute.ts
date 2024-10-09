@@ -45,7 +45,6 @@ router.post("/login", async (req, res) => {
           { expiresIn: "1h" } // Token expires in 1 hour
         );
 
-        res.status(400).json({ message: "Invalid email or password" });
         res.status(200).json({
           token, // Return token to the client
           admin: {
