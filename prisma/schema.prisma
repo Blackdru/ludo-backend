@@ -60,6 +60,7 @@ model Contest {
   currentEntries Int      @default(0) // Default is 0
   prizePool      Float    // Number mapped to Float
   entryFee       Float
+  startedAt      DateTime @default(now())
   closingTime    DateTime // Date is mapped to DateTime in Prisma
   currency       String   @default("INR") // Default currency is 'INR'
   isActive       Boolean  @default(true)  // Contest is active by default
