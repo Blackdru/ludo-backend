@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement()) // Auto-increment ID as a primary key
+  name         String   @db.VarChar(255)
+  email        String   @unique @db.VarChar(255) 
+  password     String   @db.VarChar(255)
+  otp          String?  @db.VarChar(255) // Optional OTP field
+  isVerified   Boolean  @default(false) // Default false until OTP verification
+  totalMatches Int      @default(0) // Default 0 matches initially
+  wonMatch     Int      @default(0) // Default 0 matches won initially
+  totalEarning Float    @default(0) // Default 0 earnings
+  avatar       String   @default("") // Default empty string, can be replaced with URL
+  state        String   @default("") // Default empty state
+  phoneNumber  String?  @db.VarChar(255) // Optional phone number field
+  userName     String   @unique @db.VarChar(255) // Unique username
+  Wallet Wallet[]
+}
+
+model Admin {
+  id       Int     @id @default(autoincrement()) // Auto-increment ID as the primary key
+  name     String  @db.VarChar(255)
+  email    String  @unique @db.VarChar(255)
+  password String  @db.VarChar(255)
+  role     Role    @default(admin) // Default role is 'admin'
+}
+
+enum Role {
+  admin
+  superadmin
+}
+
+
+model Banner {
+  id        Int      @id @default(autoincrement()) // Auto-increment ID as the primary key
+  title     String   @db.VarChar(255)
+  imageUrl  String   @db.VarChar(255) // Path to the uploaded image
+  createdAt DateTime @default(now()) // Default current timestamp
+  isActive  Boolean  @default(true) // Default true, banner is active
+}
+
+model Contest {
+  id             Int      @id @default(autoincrement()) // Auto-increment ID as the primary key
+  contestName    String   @db.VarChar(255)
+  firstPrize     Float    // Number mapped to Float for monetary values
+  maxEntries     Int
+  currentEntries Int      @default(0) // Default is 0
+  prizePool      Float    // Number mapped to Float
+  entryFee       Float
+  closingTime    DateTime // Date is mapped to DateTime in Prisma
+  currency       String   @default("INR") // Default currency is 'INR'
+  isActive       Boolean  @default(true)  // Contest is active by default
+}
+
+model Wallet {
+  id           Int      @id @default(autoincrement()) // Auto-increment ID as the primary key
+  userId       Int      // Reference to user (will be a foreign key relation)
+  totalBalance Float    @default(0) // Default balance is 0
+  deposit      Float    @default(0) // Default deposit is 0
+  cashback     Float    @default(0) // Default cashback is 0
+  winnings     Float    @default(0) // Default winnings is 0
+  rushRewards  Float    @default(0) // Default rush rewards is 0
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Establish relation to the User model (assuming it exists)
+  User         User     @relation(fields: [userId], references: [id])
+}
+
+
+
+
+
+
+
